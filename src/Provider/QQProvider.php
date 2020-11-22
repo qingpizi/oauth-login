@@ -12,15 +12,12 @@ use Qingpizi\OauthLogin\Contract\ProviderInterface;
 namespace Qingpizi\OauthLogin\Provider;
 
 use Qingpizi\OauthLogin\Traits\HasHttpRequest;
+use Qingpizi\OauthLogin\Exception\ApiException;
 
 class QQProvider extends AbstractProvider implements ProviderInterface
 {
 
     use HasHttpRequest;
-
-    public $openId;
-
-    public $isUseUnionId = false;
 
     protected $scope = ['get_user_info'];
 

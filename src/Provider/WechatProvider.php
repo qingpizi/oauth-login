@@ -11,16 +11,11 @@ namespace Qingpizi\OauthLogin\Provider;
 
 use Qingpizi\OauthLogin\Contract\ProviderInterface;
 use Qingpizi\OauthLogin\Traits\HasHttpRequest;
+use Qingpizi\OauthLogin\Exception\ApiException;
 
 class WechatProvider extends AbstractProvider implements ProviderInterface
 {
     use HasHttpRequest;
-
-    public $openId;
-
-    public $isUseUnionId = false;
-
-    protected $unionId;
 
     protected $scope = 'snsapi_login';
 

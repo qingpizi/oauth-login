@@ -37,6 +37,12 @@ abstract class AbstractProvider
      */
     protected $scope;
 
+    public $openId;
+
+    protected $unionId;
+
+    public $isUseUnionId = false;
+
     public function __construct(string $appId, string $appSecret, $callbackUrl = null)
     {
         $this->appId = $appId;
