@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 /**
- * Created by PhpStorm
  * User: qingpizi
  * Date: 2020/11/15
  * Time: 下午2:46
@@ -31,6 +30,9 @@ abstract class AbstractProvider
      */
     protected $callbackUrl;
 
+
+    protected $extend;
+
     /**
      * 范围
      * @var void
@@ -43,7 +45,7 @@ abstract class AbstractProvider
 
     public $isUseUnionId = false;
 
-    public function __construct(string $appId, string $appSecret, $callbackUrl = null)
+    public function __construct(string $appId, string $appSecret, $callbackUrl = null, $extend = [])
     {
         $this->appId = $appId;
         $this->appSecret = $appSecret;

@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 /**
- * Created by PhpStorm
  * User: qingpizi
  * Date: 2020/11/22
  * Time: 下午8:56
@@ -9,7 +8,8 @@ declare(strict_types=1);
 
 namespace Qingpizi\OauthLogin\Provider;
 
-use Qingpizi\OauthLogin\Contract\ProviderInterface;
+use Qingpizi\OauthLogin\Contract\AccessTokenInterface;
+use Qingpizi\OauthLogin\Contract\IdentifierInterface;
 use Qingpizi\OauthLogin\Exception\ApiException;
 use Qingpizi\OauthLogin\Exception\LogicException;
 use Qingpizi\OauthLogin\Traits\HasHttpRequest;
@@ -19,14 +19,11 @@ use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JwtAuth\Jwt;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
+use CoderCat\JWKToPEM\JWKConverter;
 
-class AppleProvider extends AbstractProvider implements ProviderInterface
+class AppleProvider extends AbstractProvider implements AccessTokenInterface, IdentifierInterface
 {
     use HasHttpRequest;
-
-    public function getAuthUri(string $state = ''): string{}
-
-    public function getUserInfo(string $accessToken): array{}
 
     public function getAccessToken(string $code): string
     {
@@ -39,7 +36,7 @@ class AppleProvider extends AbstractProvider implements ProviderInterface
         ];
         $url = 'https://appleid.apple.com/auth/token';
         $content = $this->post($url, $bodyData);
-        $result = json_decode($content, true);
+        $result = \json_decode($content, true);
 
         if(isset($result['error'])) {
             throw new ApiException($result['error_description']);
@@ -68,11 +65,23 @@ class AppleProvider extends AbstractProvider implements ProviderInterface
 
     private function getClientSecret(): string
     {
+        if (empty($this->extend['private_key'])) {
+            throw new LogicException("The private_key illegal.");
+        }
+
+        if (empty($this->extend['team_id'])) {
+            throw new LogicException("The team_id illegal.");
+        }
+
+        if (empty($this->extend['key_id'])) {
+            throw new LogicException("The key_id illegal.");
+        }
+
         $time = time();
         $sub = $this->appId;
-        $private = $this->getPrivateKey();
-        $teamId = $this->getTeamId();
-        $kid = $this->getKeyId();
+        $private = $this->extend['private_key'];
+        $teamId = $this->extend['team_id'];
+        $kid = $this->extend['key_id'];
         $aud = 'https://appleid.apple.com';
 
         $builder = (new Builder())
@@ -97,7 +106,7 @@ class AppleProvider extends AbstractProvider implements ProviderInterface
     {
         $url = 'https://appleid.apple.com/auth/keys';
         $content = $this->get($url);
-        $result = json_decode($content, true);
+        $result = \json_decode($content, true);
         $authKey = '';
         foreach ($result['keys'] as $key) {
             if ($key['kid'] === $kid) {

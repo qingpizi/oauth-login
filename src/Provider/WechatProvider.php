@@ -2,18 +2,20 @@
 declare(strict_types=1);
 
 /**
- * Created by PhpStorm
  * User: qingpizi
  * Date: 2020/11/15
  * Time: 上午10:25
  */
 namespace Qingpizi\OauthLogin\Provider;
 
-use Qingpizi\OauthLogin\Contract\ProviderInterface;
+use Qingpizi\OauthLogin\Contract\AccessTokenInterface;
+use Qingpizi\OauthLogin\Contract\AuthUriInterface;
+use Qingpizi\OauthLogin\Contract\IdentifierInterface;
+use Qingpizi\OauthLogin\Contract\UserInfoInterface;
 use Qingpizi\OauthLogin\Traits\HasHttpRequest;
 use Qingpizi\OauthLogin\Exception\ApiException;
 
-class WechatProvider extends AbstractProvider implements ProviderInterface
+class WechatProvider extends AbstractProvider implements  AuthUriInterface, AccessTokenInterface, IdentifierInterface, UserInfoInterface
 {
     use HasHttpRequest;
 
